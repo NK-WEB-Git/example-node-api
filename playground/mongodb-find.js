@@ -30,6 +30,5 @@ MongoClient.connect('mongodb://localhost:27017/TodoApp', (err, db) => {
       console.log('Unable to fetch users', err);
     });
 
-  console.log('test');
   db.close();
 });
