@@ -1,3 +1,4 @@
 node_modules/
 public/doc
 npm-debug.log
+var/logs
