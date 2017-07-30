@@ -7,6 +7,7 @@ const { User } =  require('./models/user');
 
 const app = express();
 
+app.use(express.static('public'));
 app.use(bodyParser.json());
 
 app.post('/todos', (req, res) => {
@@ -21,6 +22,38 @@ app.post('/todos', (req, res) => {
   });
 });
 
+/**
+ * @api {get} /todos List all todos
+ * @apiGroup Todos
+ * @apiSuccess {Object[]} todos Todo's list
+ * @apiSuccess {Number} todos.id Todo id
+ * @apiSuccess {Number} todos.__V Todo __v
+ * @apiSuccess {String} todos.text Todo text
+ * @apiSuccess {Boolean} todos.completed Todo is completed ?
+ * @apiSuccess {Date} todos.completedAt Todo's date completed
+ * @apiSuccessExample {json} Success
+ *    HTTP/1.1 200 OK
+ *    {
+ *      todos:[
+ *        {
+ *          "id": 1,
+ *          "text": "Study",
+ *          "completed": false
+ *          "completedAt": null,
+ *          "__v": 0
+ *        },
+ *        {
+ *          "id": 2,
+ *          "text": "Sleep",
+ *          "completed": true
+ *          "completedAt": 2017-12-04,
+ *          "__v": 0
+ *        }
+ *      ]
+ *    }
+ * @apiErrorExample {json} List error
+ *    HTTP/1.1 400 Internal Server Error
+ */
 app.get('/todos', (req, res) => {
   Todo.find().then((todos) => {
     res.send({todos});

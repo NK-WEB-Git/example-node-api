@@ -74,7 +74,7 @@ describe('GET /todos', () => {
 });
 
 describe('GET /todos/:id', () => {
-  it('should return todo doc', (done) => {
+  it('should return one todo by id', (done) => {
     request(app)
       .get(`/todos/${todos[0]._id.toHexString()}`)
       .expect(200)

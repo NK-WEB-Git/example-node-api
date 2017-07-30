@@ -1,0 +1,8 @@
+{
+  "name": "Todo API documentation",
+  "version": "1.0.0",
+  "description": "API todos list manager",
+  "template": {
+    "forceLanguage": "en"
+  }
+}
