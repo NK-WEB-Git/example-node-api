@@ -1,4 +1,5 @@
 node_modules/
 public/doc
 npm-debug.log
-var/logs
+var/logs/*
+!var/logs/.gitkeep
