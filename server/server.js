@@ -180,6 +180,17 @@ app.get('/todos/:id', (req, res) => {
   }).catch(err => res.status(400).send());
 });
 
+/**
+ * @api {delete} /todos/:id Remove a todo
+ * @apiGroup Todos
+ * @apiParam {id} id todo unique id
+ * @apiSuccessExample {json} Success
+ *    HTTP/1.1 204 No Content
+ * @apiErrorExample {json} Delete error
+ *    HTTP/1.1 404 Not Found
+ * @apiErrorExample {json} Error unknown
+ *    HTTP/1.1 400 Bad Request
+ */
 app.delete('/todos/:id', (req, res) => {
   const id = req.params.id;
   if (!ObjectID.isValid(id)) {
@@ -205,6 +216,8 @@ app.use(expressWinston.errorLogger({
     })
   ]
 }));
+
+logger.error('tztdetdedz');
 
 app.listen(port, () => {
   console.log(`Started at the port ${port}`);
