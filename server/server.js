@@ -1,5 +1,6 @@
 const express = require('express');
 const winston = require('winston');
+const expressWinston = require('express-winston');
 const bodyParser = require('body-parser');
 const { ObjectID } = require('mongodb');
 
@@ -21,6 +22,45 @@ const port = process.env.PORT || 3000;
 
 app.use(express.static('public'));
 app.use(bodyParser.json());
+
+const logger = new (winston.Logger)({
+  transports: [
+    new (winston.transports.File)({
+      name: 'info-file',
+      filename: path.join(logDir, 'info.log'),
+      level: 'info',
+    }),
+    new (winston.transports.File)({
+      name: 'error-file',
+      filename: path.join(logDir, 'error.log'),
+      handleExceptions: true,
+      level: 'error',
+    }),
+    new (winston.transports.Console)({
+      level: 'debug',
+      colorize: true,
+      prettyPrint: true,
+    }),
+  ]
+});
+
+// Place the express-winston logger before the router.
+app.use(expressWinston.logger({
+  transports: [
+    new winston.transports.Console({
+      json: true,
+      colorize: true,
+    }),
+    new winston.transports.File({
+      name: 'info-file',
+      filename: path.join(logDir, 'http.log'),
+      level: 'info',
+    }),
+  ],
+  msg: "HTTP {{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}", // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"
+  colorize: true, // Color the text and status code, using the Express/morgan color palette (text: gray, status: default green, 3XX cyan, 4XX yellow, 5XX red).
+}));
+
 
 /**
  * @api {post} /todos Register a new Todo
@@ -155,33 +195,19 @@ app.delete('/todos/:id', (req, res) => {
   }).catch(err => res.status(400).send());
 });
 
+// Place the express-winston errorLogger after the router.
+app.use(expressWinston.errorLogger({
+  transports: [
+    new winston.transports.Console({
+      json: true,
+      colorize: true,
+      prettyPrint: true,
+    })
+  ]
+}));
+
 app.listen(port, () => {
   console.log(`Started at the port ${port}`);
 });
-
-const logger = new (winston.Logger)({
-  transports: [
-    new (winston.transports.File)({
-      name: 'info-file',
-      filename: path.join(logDir, 'info.log'),
-      level: 'info',
-      prettyPrint: true,
-    }),
-    new (winston.transports.File)({
-      name: 'error-file',
-      filename: path.join(logDir, 'error.log'),
-      handleExceptions: true,
-      level: 'error',
-      prettyPrint: true,
-    }),
-    new (winston.transports.Console)({
-      level: 'debug',
-      colorize: true
-    }),
-  ]
-});
-
-logger.debug('debug test');
-logger.error('error test');
 
 module.exports = { app };
