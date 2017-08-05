@@ -1,30 +1,20 @@
-const express = require('express');
+require('./config/config');
 const winston = require('winston');
+const path = require('path');
+const express = require('express');
 const _ = require('lodash');
 const expressValidator = require('express-validator');
 const expressWinston = require('express-winston');
 const bodyParser = require('body-parser');
 const { ObjectID } = require('mongodb');
-
-const { mongoose } =  require('./db/mongoose');
-const { Todo } =  require('./models/todo');
-const { User } =  require('./models/user');
-
 const fs = require( 'fs' );
-const path = require('path');
+
 const logDir = `${__dirname}/../var/logs`; // directory path you want to set
 
 if ( !fs.existsSync(logDir)) {
   // Create the directory if it does not exist
   fs.mkdirSync(logDir);
 }
-
-const app = express();
-const port = process.env.PORT || 3000;
-
-app.use(express.static('public'));
-app.use(bodyParser.json());
-app.use(expressValidator());
 
 const logger = new (winston.Logger)({
   transports: [
@@ -46,6 +36,17 @@ const logger = new (winston.Logger)({
     }),
   ]
 });
+
+const { mongoose } =  require('./db/mongoose');
+const { Todo } =  require('./models/todo');
+const { User } =  require('./models/user');
+
+const app = express();
+const port = process.env.PORT;
+
+app.use(express.static('public'));
+app.use(bodyParser.json());
+app.use(expressValidator());
 
 // Place the express-winston logger before the router.
 /*app.use(expressWinston.logger({
