@@ -259,6 +259,8 @@ app.use(expressWinston.errorLogger({
   ]
 }));
 
+logger.error('tztdetdedz');
+
 app.listen(port, () => {
   console.log(`Started at the port ${port}`);
 });
