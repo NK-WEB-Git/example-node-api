@@ -1,5 +1,7 @@
 const express = require('express');
 const winston = require('winston');
+const _ = require('lodash');
+const expressValidator = require('express-validator');
 const expressWinston = require('express-winston');
 const bodyParser = require('body-parser');
 const { ObjectID } = require('mongodb');
@@ -22,6 +24,7 @@ const port = process.env.PORT || 3000;
 
 app.use(express.static('public'));
 app.use(bodyParser.json());
+app.use(expressValidator());
 
 const logger = new (winston.Logger)({
   transports: [
@@ -45,7 +48,7 @@ const logger = new (winston.Logger)({
 });
 
 // Place the express-winston logger before the router.
-app.use(expressWinston.logger({
+/*app.use(expressWinston.logger({
   transports: [
     new winston.transports.Console({
       json: true,
@@ -59,7 +62,7 @@ app.use(expressWinston.logger({
   ],
   msg: "HTTP {{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}", // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"
   colorize: true, // Color the text and status code, using the Express/morgan color palette (text: gray, status: default green, 3XX cyan, 4XX yellow, 5XX red).
-}));
+}));*/
 
 
 /**
@@ -203,6 +206,45 @@ app.delete('/todos/:id', (req, res) => {
     }
 
     res.status(204).send();
+  }).catch(err => res.status(400).send());
+});
+
+/**
+ * @api {delete} /todos/:id Remove a todo
+ * @apiGroup Todos
+ * @apiParam {id} id todo unique id
+ * @apiSuccessExample {json} Success
+ *    HTTP/1.1 204 No Content
+ * @apiErrorExample {json} Delete error
+ *    HTTP/1.1 404 Not Found
+ * @apiErrorExample {json} Error unknown
+ *    HTTP/1.1 400 Bad Request
+ */
+app.patch('/todos/:id', (req, res) => {
+  const id = req.params.id;
+  if (!ObjectID.isValid(id)) {
+    return res.status(404).send();
+  }
+
+  const body =_.pick(req.body, ['text', 'completed']);
+
+  if (_.isBoolean(body.completed) && body.completed) {
+    body.completedAt = new Date().getTime();
+  } else {
+    body.completed = false;
+    body.completedAt = null;
+  }
+
+  Todo.findByIdAndUpdate(id, {
+    $set: body,
+  }, {
+    new: true
+  }).then((todo) => {
+    if (!todo) {
+      return res.status(404).send();
+    }
+
+    res.send({todo});
   }).catch(err => res.status(400).send());
 });
 

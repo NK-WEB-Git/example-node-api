@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node server/server.js",
     "test": "mocha server/**/*.test.js",
+    "test-coverage": "nyc --reporter=html --reporter=text mocha server/**/*.test.js",
     "test-watch": "nodemon --exec 'npm test'",
     "doc": "apidoc -i ./server/ -o public/doc/"
   },
@@ -15,7 +16,9 @@
   "dependencies": {
     "body-parser": "^1.17.2",
     "express": "^4.15.3",
+    "express-validator": "^3.2.1",
     "express-winston": "^2.4.0",
+    "lodash": "^4.17.4",
     "mongodb": "^2.2.30",
     "mongoose": "4.10.8",
     "winston": "^2.3.1"
@@ -25,6 +28,7 @@
     "expect": "^1.20.2",
     "mocha": "^3.4.2",
     "nodemon": "^1.11.0",
+    "nyc": "^11.1.0",
     "supertest": "^3.0.0"
   }
 }
