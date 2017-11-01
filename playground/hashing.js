@@ -1,4 +1,19 @@
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+
+const password = '123abc';
+
+/*bcrypt.genSalt(10, (err, salt) => {
+  bcrypt.hash(password, salt, (err, hash) => {
+    console.log(`hash: ${hash}`);
+  });
+});*/
+
+hashedPassword = '$2a$10$XI3B26FLzbajUnHgmiQSWOppL/VOEzUxbrxcVVPUtfC3vIA/7ppwq';
+
+bcrypt.compare(password, hashedPassword, (err, res) => {
+  console.log(res);
+});
 
 const data = {
   id: 4
