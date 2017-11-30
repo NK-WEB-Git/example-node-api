@@ -19,6 +19,7 @@ app.use('/', router);
 
 app.use(errorLogger);
 
+// Start app
 app.listen(port, () => {
   console.log(`Started at the port ${port}`);
 });
