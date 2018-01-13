@@ -1,6 +1,7 @@
 const express = require('express');
 const { ObjectID } = require('mongodb');
 const _ = require('lodash');
+const cors = require('cors');
 
 const router = express.Router();
 const { mongoose } =  require('./../db/mongoose');
@@ -77,7 +78,7 @@ router
  *    HTTP/1.1 400 Bad Request
  */
 router
-  .get('', (req, res) => {
+  .get('', cors(), (req, res) => {
     Todo.find().then((todos) => {
       res.send({todos});
     }, (err) => {
